@@ -258,7 +258,7 @@ body {
 .task input[type="checkbox"] {
     position: relative;
     width: 4rem;
-    height: 2.5rem;
+    height: 3rem;
     appearance: none;
     -webkit-appearance: none;
     all: none;
