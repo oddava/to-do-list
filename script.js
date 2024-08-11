@@ -6,36 +6,24 @@ const addTaskIcon = document.getElementById("add-task-icon");
 const editTaskIcon = document.getElementById("edit-task-icon");
 const goBackIcon = document.getElementById("go-back-icon");
 const deleteIcon = document.getElementById("delete-icon")
-lightModeIcon.classList.add("hidden")
-
 const headerTitle = document.querySelector(".title");
 const headerDate = document.querySelector(".date");
-
-const dislogBox = document.getElementById("dialog-box");
-
 const container = document.querySelector(".container");
 const addOrEditTaskBody = document.querySelector(".add-or-edit-task-body");
 const mainPage = document.querySelector(".main-page");
-
-
 const title = document.querySelector("#title");
 const dueDate = document.querySelector("#due-date");
 const submitBtn = document.getElementById("submit-btn");
-
 const taskContainer = document.querySelector(".task-container");
-
 const userData = JSON.parse(localStorage.getItem("user-data")) || [];
-
-console.log(userData)
-
 let systemTheme = JSON.parse(localStorage.getItem("system-theme")) || "light";
 let currentTask = {};
 
 const clear = () => {
     title.value = "";
     dueDate.value = "";
-    toggleAddTaskWindow();
     currentTask = {};
+    toggleAddTaskWindow();
 }
 const addOrUpdateTask = () => {
     if (currentTask.id) {
@@ -43,11 +31,18 @@ const addOrUpdateTask = () => {
         userData[index].title = title.value;
         userData[index].dueDate = dueDate.value;
     } else {
+        const date = new Date();
+        const [month, day, year] = [
+        date.getMonth(),
+        date.getDate(),
+        date.getFullYear(),
+        ];
         const newTaskObj = {
             id: `${title.value.toLowerCase().split(" ").join("-")}-${Date.now()}`,
             title: title.value,
             dueDate: dueDate.value,
             isCompleted: false,
+            createdDate: `${day}-${month}-${year}`
         };
         userData.unshift(newTaskObj);
         localStorage.setItem("user-data", JSON.stringify(userData));
@@ -59,22 +54,24 @@ const addOrUpdateTask = () => {
 
 const updateTaskField = () => {
     taskContainer.innerHTML = '';
-    userData.forEach(({id, title, dueDate, isCompleted}) => {
-        taskContainer.innerHTML += `
-            <div class="task" id="${id}">
+    userData.forEach(({id, title, dueDate, isCompleted, createdDate}) => {
+        const currentDay = new Date().getDate();
+        if (createdDate.split("-")[0] == currentDay) {
+            taskContainer.innerHTML += `
+            <div class="task task-${createdDate}" id="${id}">
                 <div class="task-content">
                     <span class="due-time">${dueDate}</span>
                     <h2 class="task-title">${title}</h2>
                 </div>
                 <input type="checkbox" name="checkbox" id="checkbox" ${isCompleted ? "checked" : ""}>
             </div>`;
+        }
     });
     addCheckboxListeners();
 };
 
 const addCheckboxListeners = () => {
     document.querySelectorAll('.task input[type="checkbox"]').forEach(checkbox => {
-        console.log(userData)
         if (checkbox.checked) checkbox.closest('.task').style.backgroundColor = 'var(--bg-300)'
         checkbox.addEventListener('change', function() {
             const taskId = this.parentElement.id;
@@ -86,16 +83,14 @@ const addCheckboxListeners = () => {
                 this.closest('.task').style.backgroundColor = 'transparent';
                 userData[dataArrIndex].isCompleted = false;
             }
+            const openTaskCount = userData.filter(e => !e.isCompleted).length;
+            headerTitle.innerHTML = `${openTaskCount} open tasks`;
             localStorage.setItem("user-data", JSON.stringify(userData));
             editTaskIcon.style.display = userData[dataArrIndex].isCompleted ? "block" : "none";
-            currentTask = userData[dataArrIndex];
-            const taskCount = userData.length;
-            let completedTaskCount = 0;
-            userData.forEach((item) => {
-                if (item.isCompleted) completedTaskCount += 1;
-            })
-            const width = (completedTaskCount/taskCount)*100;
+            const completedTaskCount = userData.filter(e => e.isCompleted).length;
+            const width = (completedTaskCount/userData.length)*100;
             document.querySelector(".progressBar").style.setProperty('--progress-width',`${width}%`)
+            currentTask = userData[dataArrIndex];
         });
     });
 };
@@ -124,9 +119,7 @@ submitBtn.addEventListener("click", (e) => {
     addCheckboxListeners();
 })
 
-modeSwitch.addEventListener("click", () => {
-    body.classList.contains("dark") ? systemTheme = "light" : systemTheme = "dark";
-        localStorage.setItem("system-theme", JSON.stringify(systemTheme));
+const handleThemeSwitch = () => {
     if (darkModeIcon.classList.contains("hidden")) {
         darkModeIcon.classList.remove("hidden");
         lightModeIcon.classList.add("hidden");
@@ -136,11 +129,13 @@ modeSwitch.addEventListener("click", () => {
         darkModeIcon.classList.add("hidden");
         lightModeIcon.classList.remove("hidden");
     }
+}
+
+modeSwitch.addEventListener("click", () => {
+    body.classList.contains("dark") ? systemTheme = "light" : systemTheme = "dark";
+        localStorage.setItem("system-theme", JSON.stringify(systemTheme));
+    handleThemeSwitch();
 })
-
-
-
-
 const toggleAddTaskWindow = () => {
     container.classList.toggle("toggle-add-task");
 }
@@ -206,10 +201,6 @@ document.addEventListener("DOMContentLoaded", () => {
             break;
     }
     headerDate.innerHTML = `${currentDay} ${currentMonth}`
-    
-    setInterval(() => {
-        headerTitle.innerHTML = `${userData ? userData.length : "0"} open tasks`;
-    }, 1000);
     const taskCount = userData.length;
             let completedTaskCount = 0;
             userData.forEach((item) => {
@@ -217,16 +208,8 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             const width = (completedTaskCount/taskCount)*100;
             document.querySelector(".progressBar").style.setProperty('--progress-width',`${width}%`)
+            const openTaskCount = userData.filter(e => !e.isCompleted).length;
+            headerTitle.innerHTML = `${openTaskCount} open tasks`;
     updateTaskField();
-    if (systemTheme) {
-        if (systemTheme == "dark") {
-            body.classList.add("dark");
-            darkModeIcon.classList.add("hidden");
-            lightModeIcon.classList.remove("hidden");
-        } else {
-            darkModeIcon.classList.remove("hidden");
-            lightModeIcon.classList.add("hidden");
-            body.classList.remove("dark");
-        }
-    }
+    handleThemeSwitch();
 })

@@ -20,7 +20,7 @@
     --bg-500: rgba(0, 0, 0, .2);
 }
 
-body.dark {
+.dark {
         --primary-100:#2e3b47;
         --primary-200:#4a5a69;
         --primary-300:#c4c4c5;
@@ -46,6 +46,16 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.container {
+    min-width: 50rem;
+    min-height: fit-content;
+    background: var(--bg-200);
+    transition: .3s all ease;
+    font-size: 1.6rem;
+    border-radius: 10px;
+    box-shadow: 0 0 8px var(--bg-500);
 }
 
 .add-task-body {
@@ -156,16 +166,6 @@ body {
      input[type="time"]:focus {
         outline: 1px solid var(--accent-100);
      }
-}
-
-.container {
-    min-width: 50rem;
-    min-height: fit-content;
-    background: var(--bg-200);
-    transition: .3s all ease;
-    font-size: 1.6rem;
-    border-radius: 10px;
-    box-shadow: 0 0 8px var(--bg-500);
 }
 
 .main-page #header {
