@@ -120,7 +120,7 @@ submitBtn.addEventListener("click", (e) => {
 })
 
 const handleThemeSwitch = () => {
-    if (darkModeIcon.classList.contains("hidden")) {
+    if (systemTheme=="light") {
         darkModeIcon.classList.remove("hidden");
         lightModeIcon.classList.add("hidden");
         body.classList.remove("dark");
