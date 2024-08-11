@@ -18,6 +18,9 @@
     --bg-300:#cccbc8;
     --bg-400:#888;
     --bg-500: rgba(0, 0, 0, .2);
+    --text-easy: #28a745;
+    --text-medium: #ffc107;
+    --text-hard: #dc3545;
 }
 
 .dark {
