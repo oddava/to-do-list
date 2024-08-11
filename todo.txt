@@ -1,0 +1,5 @@
+To DO:
+- Make the basic ui of to do list app
+- Add Dark and Light themes
+- Make it resposive
+- Add colors to identify the level of tasks
