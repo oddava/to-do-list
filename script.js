@@ -42,23 +42,33 @@ const addOrUpdateTask = () => {
             title: title.value,
             dueDate: dueDate.value,
             isCompleted: false,
-            createdDate: `${day}-${month}-${year}`
+            createdDate: `${day}-${month}-${year}`,
+            isExpired: false,
         };
         userData.unshift(newTaskObj);
-        localStorage.setItem("user-data", JSON.stringify(userData));
     }
+    localStorage.setItem("user-data", JSON.stringify(userData));
+    checkExpiredTasks();
     updateTaskField();
     clear();
     currentTask = {};
 };
 
+const updateHeaderTitle = () => {
+    headerTitle.innerHTML = `${userData.filter(e => !e.isCompleted).length} open tasks`;
+}
+
+// const filterUserData = () => {
+    
+// }
+
 const updateTaskField = () => {
     taskContainer.innerHTML = '';
-    userData.forEach(({id, title, dueDate, isCompleted, createdDate}) => {
+    userData.forEach(({id, title, dueDate, isCompleted, createdDate, isExpired}) => {
         const currentDay = new Date().getDate();
         if (createdDate.split("-")[0] == currentDay) {
             taskContainer.innerHTML += `
-            <div class="task task-${createdDate}" id="${id}">
+            <div class="task task-${createdDate} ${isExpired ? "expired" : ""}" id="${id}">
                 <div class="task-content">
                     <span class="due-time">${dueDate}</span>
                     <h2 class="task-title">${title}</h2>
@@ -67,33 +77,30 @@ const updateTaskField = () => {
             </div>`;
         }
     });
+    updateHeaderTitle();
     addCheckboxListeners();
 };
 
 const addCheckboxListeners = () => {
     document.querySelectorAll('.task input[type="checkbox"]').forEach(checkbox => {
-        if (checkbox.checked) checkbox.closest('.task').style.backgroundColor = 'var(--bg-300)'
+        const taskDiv = checkbox.closest('.task');
+        if (checkbox.checked) taskDiv.classList.add('completed');
         checkbox.addEventListener('change', function() {
-            const taskId = this.parentElement.id;
+            const taskId = taskDiv.id;
             const dataArrIndex = userData.findIndex((item) => item.id === taskId);
-            if (this.checked) {
-                userData[dataArrIndex].isCompleted = true;
-                this.closest('.task').style.backgroundColor = 'var(--bg-300)';
-            } else {
-                this.closest('.task').style.backgroundColor = 'transparent';
-                userData[dataArrIndex].isCompleted = false;
-            }
-            const openTaskCount = userData.filter(e => !e.isCompleted).length;
-            headerTitle.innerHTML = `${openTaskCount} open tasks`;
+            userData[dataArrIndex].isCompleted = checkbox.checked;
+            taskDiv.classList.toggle('completed', checkbox.checked);
+            updateHeaderTitle();
             localStorage.setItem("user-data", JSON.stringify(userData));
+            currentTask = userData[dataArrIndex];
             editTaskIcon.style.display = userData[dataArrIndex].isCompleted ? "block" : "none";
             const completedTaskCount = userData.filter(e => e.isCompleted).length;
             const width = (completedTaskCount/userData.length)*100;
             document.querySelector(".progressBar").style.setProperty('--progress-width',`${width}%`)
-            currentTask = userData[dataArrIndex];
         });
     });
 };
+
 
 const deleteTask = () => {
     const index = userData.findIndex((item) => item.id === currentTask.id);
@@ -118,6 +125,19 @@ submitBtn.addEventListener("click", (e) => {
     addOrUpdateTask();
     addCheckboxListeners();
 })
+
+const checkExpiredTasks = () => {
+    const date = new Date();
+    const expiredTasks = userData.filter((item) => item.dueDate < `${date.getHours()}:${date.getMinutes()}`)
+    userData.forEach(e => e.isExpired = false)
+    if (expiredTasks) {
+        expiredTasks.forEach((e) => {
+            e.isExpired = true;
+        })
+        updateTaskField();
+    }
+    console.log(expiredTasks);
+}
 
 const handleThemeSwitch = () => {
     if (systemTheme=="light") {
@@ -208,8 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             const width = (completedTaskCount/taskCount)*100;
             document.querySelector(".progressBar").style.setProperty('--progress-width',`${width}%`)
-            const openTaskCount = userData.filter(e => !e.isCompleted).length;
-            headerTitle.innerHTML = `${openTaskCount} open tasks`;
     updateTaskField();
     handleThemeSwitch();
+    checkExpiredTasks();
 })

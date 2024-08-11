@@ -21,6 +21,7 @@
     --text-easy: #28a745;
     --text-medium: #ffc107;
     --text-hard: #dc3545;
+    --text-expired: #b01d1d6b;
 }
 
 .dark {
@@ -49,16 +50,28 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow-y: hidden;
 }
 
 .container {
     min-width: 50rem;
     min-height: fit-content;
+    max-height: 60rem;
     background: var(--bg-200);
     transition: .3s all ease;
     font-size: 1.6rem;
     border-radius: 10px;
     box-shadow: 0 0 8px var(--bg-500);
+    overflow-y: auto;
+}
+
+::-webkit-scrollbar {
+    appearance: none;
+    width: 0;
+}
+
+.expired span {
+    border-bottom: 2px solid var(--text-expired) !important;
 }
 
 .add-task-body {
@@ -96,6 +109,7 @@ body {
 }
 
 #add-or-edit-task-form {
+    padding: 0;
     width: fit-content;
     margin: 0 auto;
     display: flex;
@@ -172,6 +186,9 @@ body {
 }
 
 .main-page #header {
+    z-index: 999;
+    position: sticky;
+    top: 0;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -179,6 +196,8 @@ body {
     padding: 2rem;
     margin-bottom: 2rem;
     color: var(--text-100);
+    background: var(--bg-500);
+    backdrop-filter: blur(20px);
 }
 
 .header-content .date {
@@ -256,6 +275,10 @@ body {
     color: var(--text-100);
     font-weight: 600;
     font-size: 2.5rem;
+}
+
+.task.completed {
+    background: var(--bg-300);
 }
 
 .task input[type="checkbox"] {
