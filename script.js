@@ -96,6 +96,7 @@ const clear = () => {
     title.value = "";
     dueDate.value = "";
     currentTask = {};
+    editTaskIcon.style.display = "none";
     toggleAddTaskWindow();
 }
 
@@ -147,7 +148,7 @@ submitBtn.addEventListener("click", (e) => {
             alert("Please specify the time!")
             return;
         }
-    addOrUpdateTask();
+        addOrUpdateTask();
     addCheckboxListeners();
 })
 
