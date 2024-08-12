@@ -53,6 +53,21 @@
             <div class="task-container"></div>
         </div>
     </div>
+    <script>
+        body = document.querySelector("body")
+        systemTheme = JSON.parse(localStorage.getItem("system-theme")) || "light";
+        darkModeIcon = document.getElementById("dark-mode-icon");
+        lightModeIcon = document.getElementById("light-mode-icon");
+        if (systemTheme=="light") {
+        darkModeIcon.classList.remove("hidden");
+        lightModeIcon.classList.add("hidden");
+        body.classList.remove("dark");
+    } else {
+        body.classList.add("dark");
+        darkModeIcon.classList.add("hidden");
+        lightModeIcon.classList.remove("hidden");
+    }
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -224,5 +224,4 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector(".progressBar").style.setProperty('--progress-width',`${width}%`)
         checkExpiredTasks();
         updateTaskField();
-        handleThemeSwitch();
 })
