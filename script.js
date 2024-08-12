@@ -168,12 +168,12 @@ goBackIcon.addEventListener("click", () => {
 })
 
 editTaskIcon.addEventListener("click", () => {
-    const index = userData.findIndex((item) => item.id === currentTask.id);
-    toggleAddTaskWindow();
-    title.value = userData[index].title;
-    dueDate.value = userData[index].dueDate;
+    const index = todaysTasks().findIndex((item) => item.id === currentTask.id);
+    title.value = todaysTasks()[index].title;
+    dueDate.value = todaysTasks()[index].dueDate;
     document.querySelector("#header h2").innerText = "Editing the task";
     deleteIcon.style.display="block";
+    toggleAddTaskWindow();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
