@@ -46,7 +46,7 @@ html {
 body {
     height: 100vh;
     background: var(--bg-100);
-    transition: .3s all ease;
+    transition: .3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -71,7 +71,7 @@ body {
 }
 
 .expired span {
-    border-bottom: 2px solid var(--text-expired) !important;
+    color: rgba(255, 100, 100, .8) !important;
 }
 
 .add-task-body {
@@ -196,7 +196,7 @@ body {
     padding: 2rem;
     margin-bottom: 2rem;
     color: var(--text-100);
-    background: var(--bg-500);
+    background: var(--bg-200);
     backdrop-filter: blur(20px);
 }
 
@@ -310,7 +310,7 @@ body {
     justify-content: center;
     align-items: center;
     font-size: 1.5rem;
-    transition: .2s ease;
+    transition: .3s ease;
 }
 .task input[type="checkbox"]:checked::before {
     transform: scale(1);

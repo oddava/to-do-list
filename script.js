@@ -58,15 +58,13 @@ const updateHeaderTitle = () => {
     headerTitle.innerHTML = `${userData.filter(e => !e.isCompleted).length} open tasks`;
 }
 
-// const filterUserData = () => {
-    
-// }
+const todaysTasks = () => {
+    return userData.filter(task => task.createdDate.split('-')[0] == new Date().getDate());
+}
 
 const updateTaskField = () => {
     taskContainer.innerHTML = '';
-    userData.forEach(({id, title, dueDate, isCompleted, createdDate, isExpired}) => {
-        const currentDay = new Date().getDate();
-        if (createdDate.split("-")[0] == currentDay) {
+    todaysTasks().forEach(({id, title, dueDate, isCompleted, createdDate, isExpired}) => {
             taskContainer.innerHTML += `
             <div class="task task-${createdDate} ${isExpired ? "expired" : ""}" id="${id}">
                 <div class="task-content">
@@ -75,7 +73,6 @@ const updateTaskField = () => {
                 </div>
                 <input type="checkbox" name="checkbox" id="checkbox" ${isCompleted ? "checked" : ""}>
             </div>`;
-        }
     });
     updateHeaderTitle();
     addCheckboxListeners();
@@ -94,13 +91,12 @@ const addCheckboxListeners = () => {
             localStorage.setItem("user-data", JSON.stringify(userData));
             currentTask = userData[dataArrIndex];
             editTaskIcon.style.display = userData[dataArrIndex].isCompleted ? "block" : "none";
-            const completedTaskCount = userData.filter(e => e.isCompleted).length;
-            const width = (completedTaskCount/userData.length)*100;
+            const completedTaskCount = todaysTasks().filter(e => e.isCompleted).length;
+            const width = (completedTaskCount/todaysTasks().length)*100;
             document.querySelector(".progressBar").style.setProperty('--progress-width',`${width}%`)
         });
     });
 };
-
 
 const deleteTask = () => {
     const index = userData.findIndex((item) => item.id === currentTask.id);
@@ -110,21 +106,6 @@ const deleteTask = () => {
     updateTaskField();
     clear();
 }
-
-deleteIcon.addEventListener("click", deleteTask);
-
-submitBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    if(!title.value) {
-        alert("Please fill out the title field!") 
-        return;
-    } else if(!dueDate.value) {
-            alert("Please specify the time!")
-            return;
-        }
-    addOrUpdateTask();
-    addCheckboxListeners();
-})
 
 const checkExpiredTasks = () => {
     const date = new Date();
@@ -151,14 +132,31 @@ const handleThemeSwitch = () => {
     }
 }
 
+const toggleAddTaskWindow = () => {
+    container.classList.toggle("toggle-add-task");
+}
+
+deleteIcon.addEventListener("click", deleteTask);
+
+submitBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    if(!title.value) {
+        alert("Please fill out the title field!") 
+        return;
+    } else if(!dueDate.value) {
+            alert("Please specify the time!")
+            return;
+        }
+    addOrUpdateTask();
+    addCheckboxListeners();
+})
+
 modeSwitch.addEventListener("click", () => {
     body.classList.contains("dark") ? systemTheme = "light" : systemTheme = "dark";
         localStorage.setItem("system-theme", JSON.stringify(systemTheme));
     handleThemeSwitch();
 })
-const toggleAddTaskWindow = () => {
-    container.classList.toggle("toggle-add-task");
-}
+
 addTaskIcon.addEventListener("click", () => {
     clear();
     document.querySelector("#header h2").innerText = "Add a new task";
@@ -221,12 +219,9 @@ document.addEventListener("DOMContentLoaded", () => {
             break;
     }
     headerDate.innerHTML = `${currentDay} ${currentMonth}`
-    const taskCount = userData.length;
-            let completedTaskCount = 0;
-            userData.forEach((item) => {
-                if (item.isCompleted) completedTaskCount += 1;
-            })
-            const width = (completedTaskCount/taskCount)*100;
+
+            const completedTaskCount = todaysTasks().filter(e => e.isCompleted).length;
+            const width = (completedTaskCount/todaysTasks().length)*100;
             document.querySelector(".progressBar").style.setProperty('--progress-width',`${width}%`)
     updateTaskField();
     handleThemeSwitch();
