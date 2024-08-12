@@ -19,12 +19,10 @@ const userData = JSON.parse(localStorage.getItem("user-data")) || [];
 let systemTheme = JSON.parse(localStorage.getItem("system-theme")) || "light";
 let currentTask = {};
 
-const clear = () => {
-    title.value = "";
-    dueDate.value = "";
-    currentTask = {};
-    toggleAddTaskWindow();
+const todaysTasks = () => {
+    return userData.filter(task => task.createdDate.split('-')[0] == new Date().getDate());
 }
+
 const addOrUpdateTask = () => {
     if (currentTask.id) {
         const index = userData.findIndex((item) => item.id === currentTask.id);
@@ -56,10 +54,6 @@ const addOrUpdateTask = () => {
 
 const updateHeaderTitle = () => {
     headerTitle.innerHTML = `${userData.filter(e => !e.isCompleted).length} open tasks`;
-}
-
-const todaysTasks = () => {
-    return userData.filter(task => task.createdDate.split('-')[0] == new Date().getDate());
 }
 
 const updateTaskField = () => {
@@ -98,6 +92,13 @@ const addCheckboxListeners = () => {
     });
 };
 
+const clear = () => {
+    title.value = "";
+    dueDate.value = "";
+    currentTask = {};
+    toggleAddTaskWindow();
+}
+
 const deleteTask = () => {
     const index = userData.findIndex((item) => item.id === currentTask.id);
     userData.splice(index, 1);
@@ -117,7 +118,6 @@ const checkExpiredTasks = () => {
         })
         updateTaskField();
     }
-    console.log(expiredTasks);
 }
 
 const handleThemeSwitch = () => {
@@ -162,10 +162,10 @@ addTaskIcon.addEventListener("click", () => {
     document.querySelector("#header h2").innerText = "Add a new task";
     deleteIcon.style.display="none";
 })
+
 goBackIcon.addEventListener("click", () => {
     toggleAddTaskWindow()
 })
-
 
 editTaskIcon.addEventListener("click", () => {
     const index = userData.findIndex((item) => item.id === currentTask.id);
@@ -218,12 +218,11 @@ document.addEventListener("DOMContentLoaded", () => {
             currentMonth = "Decemeber";
             break;
     }
-    headerDate.innerHTML = `${currentDay} ${currentMonth}`
-
-            const completedTaskCount = todaysTasks().filter(e => e.isCompleted).length;
-            const width = (completedTaskCount/todaysTasks().length)*100;
-            document.querySelector(".progressBar").style.setProperty('--progress-width',`${width}%`)
-    updateTaskField();
-    handleThemeSwitch();
-    checkExpiredTasks();
+        headerDate.innerHTML = `${currentDay} ${currentMonth}`
+        const completedTaskCount = todaysTasks().filter(e => e.isCompleted).length;
+        const width = (completedTaskCount/todaysTasks().length)*100;
+        document.querySelector(".progressBar").style.setProperty('--progress-width',`${width}%`)
+        checkExpiredTasks();
+        updateTaskField();
+        handleThemeSwitch();
 })
