@@ -53,7 +53,7 @@ const addOrUpdateTask = () => {
 };
 
 const updateHeaderTitle = () => {
-    headerTitle.innerHTML = `${userData.filter(e => !e.isCompleted).length} open tasks`;
+    headerTitle.innerHTML = `${todaysTasks.filter(e => !e.isCompleted).length} open tasks`;
 }
 
 const updateTaskField = () => {
