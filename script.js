@@ -24,6 +24,7 @@ const todaysTasks = () => {
 }
 
 const addOrUpdateTask = () => {
+    checkExpiredTasks();
     if (currentTask.id) {
         const index = userData.findIndex((item) => item.id === currentTask.id);
         userData[index].title = title.value;
@@ -46,7 +47,6 @@ const addOrUpdateTask = () => {
         userData.unshift(newTaskObj);
     }
     localStorage.setItem("user-data", JSON.stringify(userData));
-    checkExpiredTasks();
     updateTaskField();
     clear();
     currentTask = {};
