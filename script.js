@@ -112,7 +112,7 @@ const deleteTask = () => {
 const checkExpiredTasks = () => {
     const date = new Date();
     const expiredTasks = todaysTasks().filter((item) => item.dueDate < `${date.getHours()}:${date.getMinutes()}`)
-    userData.forEach(e => e.isExpired = false)
+    todaysTasks().forEach(e => e.isExpired = false)
     if (expiredTasks) {
         expiredTasks.forEach((e) => {
             e.isExpired = true;
